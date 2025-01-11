@@ -2,7 +2,7 @@ import pygame
 import sys
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
-from asteroid import Asteroid
+from asteroid import Asteroid, Shot
 from asteroidfield import *
 from circleshape import *
 
@@ -20,9 +20,12 @@ def main():
     updatable_group = pygame.sprite.Group()
     drawable_group = pygame.sprite.Group()
 
+    shots = pygame.sprite.Group()
+    Shot.containers = (shots,)
+
     Player.containers = (updatable_group, drawable_group)
 
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT /2)
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT /2, shots)
 
     asteroids = pygame.sprite.Group()
 
@@ -53,8 +56,13 @@ def main():
                 print("Game over!")
                 sys.exit()
 
+        shots.update(dt)
+
         for object in drawable_group:
             object.draw(screen)
+
+        for shot in shots:
+            shot.draw(screen)
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
